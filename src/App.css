@@ -1,0 +1,82 @@
+.App {
+  text-align: center;
+  background-color: #0E1B22;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+.App-header {
+  height: 7vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-menu {
+  margin-left: 1rem;
+  display: flex;
+  height: 30px;
+  fill: whitesmoke;
+}
+
+.App-logo{
+  display: flex;
+}
+
+.App-question{
+  margin-right: 1rem;
+  display: flex;
+  height: 30px;
+  fill: whitesmoke;
+}
+
+
+.App-link {
+  color: #61dafb;
+}
+
+.line {
+  width: 100%;
+  height: 2px;
+  background-color: #0D2731;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 65vh;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container > * {
+  flex-basis: 34%;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.button-container > button{
+  border-radius: 50px;
+}
