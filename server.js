@@ -26,7 +26,7 @@ mongoose.connect(process.env.DB_URL)
     })
 
 app.get('/', async (req, res) => {
-    res.send('Hello World')
+    
 })
 
 app.get('/api/elements', async (req, res) => {
