@@ -7,10 +7,11 @@ const initialState = {
     location: '',
     year: '',
     author: '',
-    external_url: ''
+    external_url: '',
+    id: ''
 }
 
-function Add() {
+function UpdateElement () {
     const [element, setElement] = useState(initialState)
 
     const clearState = () => {
@@ -28,15 +29,17 @@ function Add() {
         e.preventDefault();
         console.log(element);
 
-        await fetch('http://localhost:3001/api/elements', {
-            method: 'POST',
+        const backendUrl = 'http://localhost:3001/api/elements/' || process.env.BACKEND_URL
+
+        await fetch(backendUrl + `${element.id}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(element)
         }).then((res) => {
-            if (res.status === 201) {
-                console.log('Element added')
+            if (res.status === 200) {
+                console.log('Element updated')
                 clearState()
                 e.target.reset()
             }
@@ -48,8 +51,8 @@ function Add() {
     return (
         <div className="form-container">
             <form onSubmit={handleSubmit}>
-                <h3>Add</h3>
-                <input type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
+                <h3>Update</h3>
+                <input type='text' placeholder='id' name="id" onChange={handleChange} required={true} />
                 <input type='text' placeholder='url_original' name="url_original" onChange={handleChange} required={true} />
                 <input type='text' placeholder='url_colored' name="url_colored" onChange={handleChange} />
                 <input type='text' placeholder='url_now' name="url_now" onChange={handleChange} required={true} />
@@ -60,7 +63,7 @@ function Add() {
                 <input type="submit" value="Submit" />
             </form>
         </div>
-    );
+    )
 }
 
-export default Add;
+export default UpdateElement

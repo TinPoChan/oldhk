@@ -8,7 +8,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import Admin from './admin';
+import Admin from '././components/adminPage/admin';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

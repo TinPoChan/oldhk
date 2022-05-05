@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
 import { ReactComponent as Menu } from './assets/menu.svg';
 import { ReactComponent as Question } from './assets/question.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react';
+import ButtonBlock from './buttonBlock';
 
 
 function Image(element) {
@@ -11,23 +11,6 @@ function Image(element) {
   return (
     <div className='image-container'>
       <img src={url} alt={url} />
-    </div>
-  );
-}
-
-function ButtonBlock(element) {
-  console.log(element.element.location);
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    console.log(e);
-  }
-  return (
-    <div className='button-container'>
-      <Button variant="secondary" onClick={handleClick}>{element.element.location}</Button>
-      <Button variant="secondary">Mong Kok </Button>
-      <Button variant="secondary">Yau Ma Tei</Button>
-      <Button variant="secondary">Tai Kok</Button>
     </div>
   );
 }
@@ -50,31 +33,52 @@ function Line() {
 
 function App() {
   const [element, setElement] = useState('');
+  const [randomLocations, setRandomLocations] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch('http://localhost:3001/api/elements/random');
+      const json = await res.json();
+      setElement(json);
+    }
+
     fetchData();
   }, []);
 
-  function fetchData() {
-    const backendUrl = 'http://localhost:3001/api/elements/' || process.env.BACKEND_URL
-    fetch(backendUrl+'random')
-    .then(response => response.json())
-    .then(data => {
-      setElement(()=>data);
-    })
+  useEffect(() => {
+    if (element) {
+      let isMounted = true;
+      const fetchRandomLocation = async () => {
+        const res = await fetch('http://localhost:3001/api/locations/random/' + element.location);
+        const json = await res.json();
+        if (isMounted) {
+          for (let i = 0; i < json.length; i++) {
+            setRandomLocations(prevState => [...prevState, json[i]]);
+          }
+        }
+      }
+      
+      fetchRandomLocation();
+      return () => { isMounted = false }
+    }
+
+  }, [element]);
+
+  
+  if(element && randomLocations.length > 0) {
+    // console.log(randomLocations[0]);
+    return (
+      <div className="App">
+
+        <HeaderBlock />
+        <Line />
+        <Image element={element} />
+        
+        <ButtonBlock element={element} randomLocations={randomLocations} />
+
+      </div>
+    );
   }
-
-  return (
-    <div className="App">
-
-      <HeaderBlock />
-      <Line />
-      <Image element={element} />
-      
-      <ButtonBlock element={element} />
-      
-    </div>
-  );
 }
 
 export default App;

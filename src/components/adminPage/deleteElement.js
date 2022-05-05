@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Delete() {
+function DeleteElement() {
     const [id, setId] = useState('')
 
     const handleChange = (e) => {
@@ -34,4 +34,4 @@ function Delete() {
     );
 }
 
-export default Delete;
+export default DeleteElement;

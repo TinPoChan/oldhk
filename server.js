@@ -90,6 +90,30 @@ app.post('/api/elements/all', async (req, res) => {
     }
 })
 
+// Get random location from database
+app.get('/api/locations/random', async (req, res) => {
+    const locations = await Location.find()
+    const random = Math.floor(Math.random() * locations.length)
+    res.json(locations[random])
+})
+
+//get 3 random location from database that does not contain name_zh
+app.get('/api/locations/random/:name_zh', async (req, res) => {
+    const locations = await Location.find()
+    const filter_locations = locations.filter(location => location.name_zh !== req.params.name_zh)
+
+    const three_random_not_duplicate = []
+    while (three_random_not_duplicate.length < 3) {
+        const random = Math.floor(Math.random() * filter_locations.length)
+        const random_location = filter_locations[random]
+        if (!three_random_not_duplicate.includes(random_location.name_zh)) {
+            three_random_not_duplicate.push(random_location.name_zh)
+        }
+    }
+    res.json(three_random_not_duplicate)
+})
+
+
 app.get('/api/locations', async (req, res) => {
     const locations = await Location.find()
     res.json(locations)
