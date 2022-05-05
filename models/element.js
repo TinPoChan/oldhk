@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const elementSchema = new mongoose.Schema({
+    name:{
+        type: String,
+        required: true
+    },
     url_original: {
         type: String,
         required: true
@@ -14,7 +18,6 @@ const elementSchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: true
     },
     year: {
         type: String,

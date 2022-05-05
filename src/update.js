@@ -29,7 +29,9 @@ function Update () {
         e.preventDefault();
         console.log(element);
 
-        await fetch(`http://localhost:3001/api/elements/${element.id}`, {
+        const backendUrl = 'http://localhost:3001/api/elements/' || process.env.BACKEND_URL
+
+        await fetch(backendUrl + `${element.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

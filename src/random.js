@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 async function Random() {
     const [element, setElement] = useState('');
-
-    const response = await fetch('http://localhost:3001/api/elements/random');
+    const backendUrl = 'http://localhost:3001/api/elements/' || process.env.BACKEND_URL
+    const response = await fetch(backendUrl+'random');
     const data = await response.json();
     setElement(data);
     console.log(element);

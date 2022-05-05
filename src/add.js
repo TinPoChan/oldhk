@@ -49,6 +49,7 @@ function Add() {
         <div className="form-container">
             <form onSubmit={handleSubmit}>
                 <h3>Add</h3>
+                <input type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
                 <input type='text' placeholder='url_original' name="url_original" onChange={handleChange} required={true} />
                 <input type='text' placeholder='url_colored' name="url_colored" onChange={handleChange} />
                 <input type='text' placeholder='url_now' name="url_now" onChange={handleChange} required={true} />

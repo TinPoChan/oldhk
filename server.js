@@ -4,6 +4,7 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 const Element = require('./models/element')
+const Location = require('./models/location')
 
 
 app.use(cors())
@@ -86,5 +87,20 @@ app.post('/api/elements/all', async (req, res) => {
         res.send('All elements deleted')
     } catch (e) {
         res.status(500).send()
+    }
+})
+
+app.get('/api/locations', async (req, res) => {
+    const locations = await Location.find()
+    res.json(locations)
+})
+
+app.post('/api/locations', async (req, res) => {
+    const location = new Location(req.body)
+    try {
+        await location.save()
+        res.status(201).send(location)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })

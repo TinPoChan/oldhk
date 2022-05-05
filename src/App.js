@@ -15,18 +15,24 @@ function Image(element) {
   );
 }
 
-function ButtonBlock() {
+function ButtonBlock(element) {
+  console.log(element.element.location);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    console.log(e);
+  }
   return (
     <div className='button-container'>
-      <Button variant="secondary">黃大仙</Button>
-      <Button variant="secondary">黃大仙</Button>
-      <Button variant="secondary">黃大仙</Button>
-      <Button variant="secondary">黃大仙</Button>
+      <Button variant="secondary" onClick={handleClick}>{element.element.location}</Button>
+      <Button variant="secondary">Mong Kok </Button>
+      <Button variant="secondary">Yau Ma Tei</Button>
+      <Button variant="secondary">Tai Kok</Button>
     </div>
   );
 }
 
-function HeaderBlock(element) {
+function HeaderBlock() {
   return (
     <header className="App-header">
       <Menu className='App-menu' />
@@ -50,7 +56,8 @@ function App() {
   }, []);
 
   function fetchData() {
-    fetch('http://localhost:3001/api/elements/random')
+    const backendUrl = 'http://localhost:3001/api/elements/' || process.env.BACKEND_URL
+    fetch(backendUrl+'random')
     .then(response => response.json())
     .then(data => {
       setElement(()=>data);
