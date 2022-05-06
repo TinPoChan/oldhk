@@ -85,3 +85,14 @@
   margin-bottom: 0.75rem;
   border-radius: 15px;
 }
+
+.info-container {
+  width: 80vw;
+  height: 50vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  background-color: #e0ddd1;
+  border-radius: 10px;
+}
