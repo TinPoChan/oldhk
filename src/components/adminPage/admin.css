@@ -1,0 +1,83 @@
+*{
+    margin: 0;
+}
+.Admin-container {
+    display: flex;
+    width: 100%;
+}
+
+.admin-tabs{
+    width: 30%;
+    height: 100vh;
+    background-color: #0D2731;
+    color: white;
+}
+.admin-tabs button {
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem;
+    border: none;
+    background-color: #0D2731;
+    color: white;
+}
+.admin-tabs button:hover {
+    background-color: whitesmoke;
+    color: #0D2731;
+}
+
+.admin-tabs-header{
+    margin: auto;
+    font-size: 1.8rem;
+    padding: 0.5rem;
+
+}
+
+.admin-content{
+    width: 70%;
+}
+.element-tabs, .location-tabs{
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.element-tabs button, .location-tabs button{
+    width: 10rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #0D2731;
+    color: white;
+    margin: 1rem;
+}
+.element-tabs button:hover, .location-tabs button:hover{
+    background-color: whitesmoke;
+    color: #0D2731;
+}
+.element-content, .location-content{
+    width: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    /* margin: 1rem; */
+
+}
+
+.form-container{
+    /* width: 100%; */
+    width: 90%;
+    
+}
+.form-container input, textarea, select{
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.form-container textarea {
+    height: 10rem;
+}

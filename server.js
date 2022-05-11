@@ -35,6 +35,11 @@ app.get('/api/elements', async (req, res) => {
     res.json(elements)
 })
 
+app.get('/api/elements/id/:id', async (req, res) => {
+    const element = await Element.findById(req.params.id)
+    res.json(element)
+})
+
 app.post('/api/elements', async (req, res) => {
     const element = new Element(req.body)
     try {
@@ -45,7 +50,7 @@ app.post('/api/elements', async (req, res) => {
     }
 })
 
-app.delete('/api/elements/:id', async (req, res) => {
+app.delete('/api/elements/id/:id', async (req, res) => {
     try {
         const element = await Element.findByIdAndDelete(req.params.id)
         if (!element) {
@@ -57,7 +62,7 @@ app.delete('/api/elements/:id', async (req, res) => {
     }
 })
 
-app.put('/api/elements/:id', async (req, res) => {
+app.put('/api/elements/id/:id', async (req, res) => {
     const updates = Object.keys(req.body)
 
     try {
@@ -74,7 +79,7 @@ app.put('/api/elements/:id', async (req, res) => {
 })
 
 // get random element from database
-app.get('/api/elements/random', async (req, res) => {
+app.get('/api/elements/random/', async (req, res) => {
     const elements = await Element.find()
     const random = Math.floor(Math.random() * elements.length)
     res.json(elements[random])
@@ -127,4 +132,25 @@ app.post('/api/locations', async (req, res) => {
     } catch (e) {
         res.status(400).send(e)
     }
+})
+
+app.put('/api/locations/id/:id', async (req, res) => {
+    const updates = Object.keys(req.body)
+    
+    try {
+        const location = await Location.findById(req.params.id)
+        updates.forEach((update) => location[update] = req.body[update])
+        await location.save()
+        if (!location) {
+            return res.status(404).send()
+        }
+        res.send(location)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+app.get('/api/locations/id/:id', async (req, res) => {
+    const location = await Location.findById(req.params.id)
+    res.json(location)
 })

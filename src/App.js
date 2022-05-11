@@ -119,6 +119,7 @@ function App() {
 
   useEffect(() => {
     if (element) {
+      setRandomLocations(prevState => []);
       let isMounted = true;
       const fetchRandomLocation = async () => {
         const res = await fetch('http://localhost:3001/api/locations/random/' + element.location);
@@ -176,16 +177,16 @@ function App() {
   }
 
 
-
     return (
       <div className="App">
 
         <HeaderBlock />
         <Line />
-        <Image element={element} />
-
+        {randomLocations.length === 4 ? <Image element={element} /> : null}
+        {/* <Image element={element} /> */}
         {/* <ButtonBlock element={element} randomLocations={randomLocations} /> */}
 
+        
         <div className='button-container'>
 
           {randomLocations.map((location, index) => {
@@ -194,10 +195,6 @@ function App() {
             )
           })}
           
-          {/* <Button variant="secondary" onClick={handleClick}>{randomLocations[0]}</Button>
-          <Button variant="secondary" onClick={handleClick}>{randomLocations[1]}</Button>
-          <Button variant="secondary" onClick={handleClick}>{randomLocations[2]}</Button>
-          <Button variant="secondary" onClick={handleClick}>{randomLocations[3]}</Button> */}
         </div>
 
           {isAnswered && isCorrect && <>{info(element)}</>}

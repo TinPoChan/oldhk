@@ -10,7 +10,7 @@ function DeleteElement() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(id);
-        await fetch(`http://localhost:3001/api/elements/${id}`, {
+        await fetch(`http://localhost:3001/api/elements/id/${id}`, {
             method: 'DELETE',
         }).then((res) => {
             if (res.status === 200) {

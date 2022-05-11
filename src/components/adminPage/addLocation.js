@@ -77,7 +77,7 @@ function AddLocation() {
 
             <input type='text' placeholder='exist' name="exist" defaultValue={true} onChange={handleChange} required={true} />
             <input type='text' placeholder='ref' name="ref" onChange={handleChange} required={true} />
-            <button type="submit">Add Location</button>
+            <input type="submit" value="Submit" />
         </form>
     </div>
     )

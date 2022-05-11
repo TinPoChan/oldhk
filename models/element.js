@@ -28,6 +28,9 @@ const elementSchema = new mongoose.Schema({
     },
     external_url: {
         type: String,
+    },
+    description:{
+        type: String,
     }
 })
 
