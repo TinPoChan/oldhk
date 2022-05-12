@@ -81,7 +81,6 @@ function UpdateElement() {
                         <input type='text' placeholder='year' name="year" onChange={handleChange} required={true} defaultValue={element.year}/>
                         <input type='text' placeholder='author' name="author" onChange={handleChange} defaultValue={element.author}/>
                         <input type='text' placeholder='external_url' name="external_url" onChange={handleChange} defaultValue={element.external_url}/>
-                        <input type='text' placeholder='description' name="description" onChange={handleChange} defaultValue={element.description}/>
                         <textarea type='text' placeholder='description' name="description" onChange={handleChange} defaultValue={element.description}/>
                     </>
                 ) : null}
