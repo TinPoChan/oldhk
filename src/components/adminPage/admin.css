@@ -73,11 +73,12 @@
     width: 90%;
     
 }
-.form-container input, textarea, select{
+/* .form-container input, textarea, select{
     width: 100%;
     padding: 0.5rem;
-}
+} */
 
 .form-container textarea {
     height: 10rem;
 }
+

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload } from "@aws-sdk/lib-storage";
 import { S3Client } from "@aws-sdk/client-s3";
-
+import { nanoid } from 'nanoid'
 
 
 const initialState = {
@@ -12,8 +12,11 @@ const initialState = {
     year: '',
     author: '',
     external_url: '',
-    description: ''
+    description: '',
+    s3_id: '',
 }
+
+let s3_id = nanoid();
 
 function AddElement() {
     const [element, setElement] = useState(initialState)
@@ -29,7 +32,9 @@ function AddElement() {
         })
     }
 
-    const upload = async (e) => {
+    const handleUpload = async (e) => {
+        e.preventDefault();
+
         let file = e.target.files[0];
 
         let extn = file.name.split('.').pop();
@@ -39,10 +44,11 @@ function AddElement() {
         if (extn === 'js') contentType = "application/javascript";
         if (extn === 'png' || extn === 'jpg' || extn === 'gif') contentType = "image/" + extn;
 
+        const folderPath = 'elements/' + s3_id + '/' + file.name;
         try {
             const parallelUploads3 = new Upload({
                 client: new S3Client({ region: "ap-east-1", credentials: { accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY, secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY } }),
-                params: { Bucket: "oldhk", Key: file.name, Body: file, ContentType: contentType },
+                params: { Bucket: "oldhk", Key: folderPath, Body: file, ContentType: contentType },
                 leavePartsOnError: false, // optional manually handle dropped parts
             });
 
@@ -51,13 +57,23 @@ function AddElement() {
             });
 
             await parallelUploads3.done();
-        } 
+
+            console.log("Uploaded to S3");
+
+        }
         catch (e) {
             console.log(e);
         }
 
+        let url = "https://oldhk.s3.ap-east-1.amazonaws.com/" + folderPath;
 
+        setElement({
+            ...element,
+            [e.target.name]: url,
+            s3_id: s3_id
+        })
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -73,6 +89,7 @@ function AddElement() {
                 console.log('Element added')
                 clearState()
                 e.target.reset()
+                s3_id = nanoid();
             }
         }).catch(err => {
             console.log(err)
@@ -83,17 +100,42 @@ function AddElement() {
         <div className="form-container">
             <form onSubmit={handleSubmit}>
                 <h3>Add</h3>
-                <input type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
-                {/* <input type='text' placeholder='url_original' name="url_original" onChange={handleChange} required={true} /> */}
-                <input type='file' placeholder='url_original' name="url_original" onChange={upload} required={true} />
-                <input type='text' placeholder='url_colored' name="url_colored" onChange={handleChange} />
-                <input type='text' placeholder='url_now' name="url_now" onChange={handleChange} required={true} />
-                <input type='text' placeholder='location' name="location" onChange={handleChange} required={true} />
-                <input type='text' placeholder='year' name="year" onChange={handleChange} required={true} />
-                <input type='text' placeholder='author' name="author" onChange={handleChange} />
-                <input type='text' placeholder='external_url' name="external_url" onChange={handleChange} />
-                <textarea placeholder='description' name="description" onChange={handleChange} />
-                <input type="submit" value="Submit" />
+
+                <input className="form-control mb-3" type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
+
+                <label htmlFor="url_original">URL Original: </label>
+                {element.url_original ? (
+                    <a href={element.url_original} target="_blank" rel="noopener noreferrer">{element.url_original}</a>
+                ) : null}
+                <input className="form-control mb-3" type='file' name="url_original" onChange={handleUpload} required={true} />
+
+                <label htmlFor="url_colored">URL Colored: </label>
+                {element.url_colored ? (
+                    <a href={element.url_colored} target="_blank" rel="noopener noreferrer">{element.url_colored}</a>
+                ) : null}
+                <input className="form-control mb-3" type='file' name="url_colored" onChange={handleUpload} />
+
+                <label htmlFor="url_now">URL Now: </label>
+                {element.url_now ? (
+                    <a href={element.url_now} target="_blank" rel="noopener noreferrer">{element.url_now}</a>
+                ) : null}
+                <input className="form-control mb-3" type='file' name="url_now" onChange={handleUpload} required={true} />
+
+                <label htmlFor="location">Location: </label>
+                <input className="form-control mb-3" type='text' placeholder='location' name="location" onChange={handleChange} required={true} />
+
+                <label htmlFor="year">Year: </label>
+                <input className="form-control mb-3" type='text' placeholder='year' name="year" onChange={handleChange} required={true} />
+
+                <label htmlFor="author">Author: </label>
+                <input className="form-control mb-3" type='text' placeholder='author' name="author" onChange={handleChange} />
+
+                <label htmlFor="external_url">External URL: </label>
+                <input className="form-control mb-3" type='text' placeholder='external_url' name="external_url" onChange={handleChange} />
+
+                <label htmlFor="description">Description: </label>
+                <textarea className="form-control mb-3" placeholder='description' name="description" onChange={handleChange} />
+                <input className="form-control" type="submit" value="Submit" />
             </form>
         </div>
     );

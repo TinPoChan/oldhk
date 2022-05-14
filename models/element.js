@@ -31,6 +31,9 @@ const elementSchema = new mongoose.Schema({
     },
     description:{
         type: String,
+    },
+    s3_id: {
+        type: String,
     }
 })
 
