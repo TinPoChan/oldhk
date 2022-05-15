@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Upload } from "@aws-sdk/lib-storage";
-import { S3Client } from "@aws-sdk/client-s3";
 import { nanoid } from 'nanoid'
+import uploadToS3 from "../../utils/uploadToS3";
 
 
 const initialState = {
@@ -36,34 +35,9 @@ function AddElement() {
         e.preventDefault();
 
         let file = e.target.files[0];
-
-        let extn = file.name.split('.').pop();
-        let contentType = 'application/octet-stream';
-        if (extn === 'html') contentType = "text/html";
-        if (extn === 'css') contentType = "text/css";
-        if (extn === 'js') contentType = "application/javascript";
-        if (extn === 'png' || extn === 'jpg' || extn === 'gif') contentType = "image/" + extn;
-
         const folderPath = 'elements/' + s3_id + '/' + file.name;
-        try {
-            const parallelUploads3 = new Upload({
-                client: new S3Client({ region: "ap-east-1", credentials: { accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY, secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY } }),
-                params: { Bucket: "oldhk", Key: folderPath, Body: file, ContentType: contentType },
-                leavePartsOnError: false, // optional manually handle dropped parts
-            });
 
-            parallelUploads3.on("httpUploadProgress", (progress) => {
-                console.log(progress);
-            });
-
-            await parallelUploads3.done();
-
-            console.log("Uploaded to S3");
-
-        }
-        catch (e) {
-            console.log(e);
-        }
+        await uploadToS3(file, folderPath);
 
         let url = "https://oldhk.s3.ap-east-1.amazonaws.com/" + folderPath;
 
@@ -99,42 +73,42 @@ function AddElement() {
     return (
         <div className="form-container">
             <form onSubmit={handleSubmit}>
-                <h3>Add</h3>
+                <h3>Add Element</h3>
 
-                <input className="form-control mb-3" type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
+                <input className="form-control mb-2" type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
 
-                <label htmlFor="url_original">URL Original: </label>
+                <label className="mb-1" htmlFor="url_original">URL Original: </label>
                 {element.url_original ? (
                     <a href={element.url_original} target="_blank" rel="noopener noreferrer">{element.url_original}</a>
                 ) : null}
-                <input className="form-control mb-3" type='file' name="url_original" onChange={handleUpload} required={true} />
+                <input className="form-control mb-2" type='file' name="url_original" onChange={handleUpload} required={true} />
 
-                <label htmlFor="url_colored">URL Colored: </label>
+                <label className="mb-1" htmlFor="url_colored">URL Colored: </label>
                 {element.url_colored ? (
                     <a href={element.url_colored} target="_blank" rel="noopener noreferrer">{element.url_colored}</a>
                 ) : null}
-                <input className="form-control mb-3" type='file' name="url_colored" onChange={handleUpload} />
+                <input className="form-control mb-2" type='file' name="url_colored" onChange={handleUpload} />
 
-                <label htmlFor="url_now">URL Now: </label>
+                <label className="mb-1" htmlFor="url_now">URL Now: </label>
                 {element.url_now ? (
                     <a href={element.url_now} target="_blank" rel="noopener noreferrer">{element.url_now}</a>
                 ) : null}
-                <input className="form-control mb-3" type='file' name="url_now" onChange={handleUpload} required={true} />
+                <input className="form-control mb-2" type='file' name="url_now" onChange={handleUpload} required={true} />
 
                 <label htmlFor="location">Location: </label>
-                <input className="form-control mb-3" type='text' placeholder='location' name="location" onChange={handleChange} required={true} />
+                <input className="form-control mb-2" type='text' placeholder='location' name="location" onChange={handleChange} required={true} />
 
                 <label htmlFor="year">Year: </label>
-                <input className="form-control mb-3" type='text' placeholder='year' name="year" onChange={handleChange} required={true} />
+                <input className="form-control mb-2" type='text' placeholder='year' name="year" onChange={handleChange} required={true} />
 
                 <label htmlFor="author">Author: </label>
-                <input className="form-control mb-3" type='text' placeholder='author' name="author" onChange={handleChange} />
+                <input className="form-control mb-2" type='text' placeholder='author' name="author" onChange={handleChange} />
 
                 <label htmlFor="external_url">External URL: </label>
-                <input className="form-control mb-3" type='text' placeholder='external_url' name="external_url" onChange={handleChange} />
+                <input className="form-control mb-2" type='text' placeholder='external_url' name="external_url" onChange={handleChange} />
 
                 <label htmlFor="description">Description: </label>
-                <textarea className="form-control mb-3" placeholder='description' name="description" onChange={handleChange} />
+                <textarea className="form-control mb-2" placeholder='description' name="description" onChange={handleChange} />
                 <input className="form-control" type="submit" value="Submit" />
             </form>
         </div>

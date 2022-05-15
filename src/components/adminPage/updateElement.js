@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import uploadToS3 from "../../utils/uploadToS3";
 
 const initialState = {
     url_original: '',
@@ -9,7 +10,8 @@ const initialState = {
     author: '',
     external_url: '',
     id: '',
-    description: ''
+    description: '',
+    s3_id: '',
 }
 
 function UpdateElement() {
@@ -66,26 +68,71 @@ function UpdateElement() {
         }
     }
 
+    const handleUpload = async (e) => {
+        e.preventDefault();
+
+        let file = e.target.files[0];
+        const folderPath = 'elements/' + element.s3_id + '/' + file.name;
+
+        await uploadToS3(file, folderPath);
+
+        let url = "https://oldhk.s3.ap-east-1.amazonaws.com/" + folderPath;
+
+        setElement({
+            ...element,
+            [e.target.name]: url,
+        })
+    }
+
+
+
+
     return (
         <div className="form-container">
             <form className="updateElementForm" onSubmit={handleSubmit}>
-                <h3>Update</h3>
-                <input type='text' placeholder='id' name="id" onInput={handleChange} required={true} />
+                <h3>Update Element</h3>
+                <input className="form-control mb-2" type='text' placeholder='id' name="id" onInput={handleChange} required={true} />
                 {formText === 'Submit' ? (
                     <>
-                        <input type='text' placeholder='name' name="name" onChange={handleChange} required={true} defaultValue={element.name} />
-                        <input type='text' placeholder='url_original' name="url_original" onChange={handleChange} required={true} defaultValue={element.url_original} />
-                        <input type='text' placeholder='url_colored' name="url_colored" onChange={handleChange} defaultValue={element.url_colored} />
-                        <input type='text' placeholder='url_now' name="url_now" onChange={handleChange} required={true} defaultValue={element.url_now}/>
-                        <input type='text' placeholder='location' name="location" onChange={handleChange} required={true} defaultValue={element.location}/>
-                        <input type='text' placeholder='year' name="year" onChange={handleChange} required={true} defaultValue={element.year}/>
-                        <input type='text' placeholder='author' name="author" onChange={handleChange} defaultValue={element.author}/>
-                        <input type='text' placeholder='external_url' name="external_url" onChange={handleChange} defaultValue={element.external_url}/>
-                        <textarea type='text' placeholder='description' name="description" onChange={handleChange} defaultValue={element.description}/>
+                        <label htmlFor="name">Name: </label>
+                        <input className="form-control mb-2" type='text' placeholder='name' name="name" defaultValue={element.name} onChange={handleChange} required={true} />
+
+                        <label className="mb-1" htmlFor="url_original">URL Original: </label>
+                        {element.url_original ? (
+                            <a href={element.url_original} target="_blank" rel="noopener noreferrer">{element.url_original}</a>
+                        ) : null}
+                        <input className="form-control mb-2" type='file' name="url_original" onChange={handleUpload} />
+
+                        <label className="mb-1" htmlFor="url_colored">URL Colored: </label>
+                        {element.url_colored ? (
+                            <a href={element.url_colored} target="_blank" rel="noopener noreferrer">{element.url_colored}</a>
+                        ) : null}
+                        <input className="form-control mb-2" type='file' name="url_colored" onChange={handleUpload} />
+
+                        <label className="mb-1" htmlFor="url_now">URL Now: </label>
+                        {element.url_now ? (
+                            <a href={element.url_now} target="_blank" rel="noopener noreferrer">{element.url_now}</a>
+                        ) : null}
+                        <input className="form-control mb-2" type='file' name="url_now" onChange={handleUpload} />
+
+                        <label htmlFor="location">Location: </label>
+                        <input className="form-control mb-2" type='text' placeholder='location' name="location" defaultValue={element.location} onChange={handleChange} required={true} />
+
+                        <label htmlFor="year">Year: </label>
+                        <input className="form-control mb-2" type='text' placeholder='year' name="year" defaultValue={element.year} onChange={handleChange} required={true} />
+
+                        <label htmlFor="author">Author: </label>
+                        <input className="form-control mb-2" type='text' placeholder='author' name="author" defaultValue={element.author} onChange={handleChange} required={true} />
+
+                        <label htmlFor="external_url">External URL: </label>
+                        <input className="form-control mb-2" type='text' placeholder='external_url' name="external_url" defaultValue={element.external_url} onChange={handleChange} required={true} />
+
+                        <label htmlFor="description">Description: </label>
+                        <textarea className="form-control mb-2" type='text' placeholder='description' name="description" defaultValue={element.description} onChange={handleChange} required={true} />
                     </>
                 ) : null}
 
-                <input type="submit" value={formText} />
+                <input className="form-control mb-2" type="submit" value={formText} />
             </form>
         </div>
     )
