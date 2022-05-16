@@ -105,7 +105,7 @@ function AddElement() {
                 <label htmlFor="description_en">Description (English)</label>
                 <textarea className="form-control mb-2" type='text' placeholder='description_en' name="description_en" onChange={handleChange} />
 
-                <input className="form-control" type="submit" value="Submit" />
+                <input className="form-control mb-2" type="submit" value="Submit" />
             </form>
         </div>
     );

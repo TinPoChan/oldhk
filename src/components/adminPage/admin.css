@@ -7,10 +7,10 @@
 }
 
 .admin-tabs{
-    width: 30%;
-    height: 100vh;
+    width: 20rem;
     background-color: #0D2731;
-    color: white;
+    color: white;   
+    min-height: 100vh;
 }
 .admin-tabs button {
     width: 100%;

@@ -32,49 +32,6 @@ function Line() {
   )
 }
 
-// function ButtonBlock(props) {
-//   // eslint-disable-next-line react/prop-types
-//   const location = props.element.location
-//   // eslint-disable-next-line react/prop-types
-//   let arr = [...props.randomLocations]
-
-//   // console.log(location);
-
-//   // arr.push(location)
-
-//   // console.log(arr);
-
-
-
-//   // arr = shuffle(arr);
-
-//   // console.log(arr);
-
-//   const handleClick = (e) => {
-//     // eslint-disable-next-line react/prop-types
-//     // props.setIsAnswered(true);
-//     e.preventDefault();
-//     if (props)
-//       if (e.target.innerText === location) {
-//         console.log('You found the location!');
-//         e.target.className = 'btn-success';
-//       } else {
-//         console.log('You did not find the location!');
-//         e.target.className = 'btn-danger';
-//       }
-//   }
-
-
-//   return (
-//     <div className='button-container'>
-//       <Button variant="secondary" onClick={handleClick}>{arr[0]}</Button>
-//       <Button variant="secondary" onClick={handleClick}>{arr[1]}</Button>
-//       <Button variant="secondary" onClick={handleClick}>{arr[2]}</Button>
-//       <Button variant="secondary" onClick={handleClick}>{arr[3]}</Button>
-//     </div>
-//   );
-// }
-
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
   // While there remain elements to shuffle...
@@ -92,16 +49,11 @@ function shuffle(array) {
   return array;
 }
 
-
-
 function App() {
   const [element, setElement] = useState('');
   const [randomLocations, setRandomLocations] = useState([]);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
   const [reset, setReset] = useState(false);
-
-
 
   useEffect(() => {
     fetchData();
@@ -112,7 +64,7 @@ function App() {
   }, [reset]);
 
   const fetchData = async () => {
-    const res = await fetch('http://localhost:3001/api/elements/random');
+    const res = await fetch(process.env.REACT_APP_BACKEND_URL + 'elements/random');
     const json = await res.json();
     setElement(json);
   }
@@ -122,7 +74,7 @@ function App() {
       setRandomLocations(prevState => []);
       let isMounted = true;
       const fetchRandomLocation = async () => {
-        const res = await fetch('http://localhost:3001/api/locations/random/' + element.location);
+        const res = await fetch(process.env.REACT_APP_BACKEND_URL + 'locations/random/' + element.location);
         const json = await res.json();
         if (isMounted) {
           for (let i = 0; i < json.length; i++) {
@@ -144,11 +96,9 @@ function App() {
     if (!isAnswered) {
       if (e.target.innerText === element.location) {
         e.target.className = 'btn-success';
-        setIsCorrect(true);
       }
       else {
         e.target.className = 'btn-danger';
-        setIsCorrect(false);
       }
       setIsAnswered(true);
     }
@@ -156,53 +106,48 @@ function App() {
 
   const restartGame = () => {
     setIsAnswered(false);
-    setIsCorrect(false);
-    setElement(()=>'');
+    setElement(() => '');
     setRandomLocations(prevState => []);
     setReset(!reset);
-    
   }
 
-  function info(element) {
+  function ShowInfo(element) {
+    const info = element.element
     return (
       <div className='info-container'>
-        <div className='info-name'>{element.name}</div>
-        <div className='info-location'>{element.location}</div>
-        {element.year ? <div className='info-year'>{element.year}</div> : null}
-        {element.author ? <div className='info-author'>{element.author}</div> : null}
-        {element.external_url ? <div className='info-url'>{element.external_url}</div> : null}
+        <div className='info-name'>{info.name}</div>
+        <div className='info-location'>{info.location}</div>
+        {info.year ? <div className='info-year'>{info.year}</div> : null}
+        {info.author ? <div className='info-author'>{info.author}</div> : null}
+        {info.external_url ? <div className='info-url'>{info.external_url}</div> : null}
         <button className='cancel-button' onClick={restartGame}>Cancel</button>
       </div>
     );
   }
 
-
+  function ButtonBlock(randomLocations){
     return (
-      <div className="App">
-
-        <HeaderBlock />
-        <Line />
-        {randomLocations.length === 4 ? <Image element={element} /> : null}
-        {/* <Image element={element} /> */}
-        {/* <ButtonBlock element={element} randomLocations={randomLocations} /> */}
-
-        
-        <div className='button-container'>
-
-          {randomLocations.map((location, index) => {
-            return (
-              <Button variant="secondary" key={index} onClick={handleClick}>{location}</Button>
-            )
-          })}
-          
-        </div>
-
-          {isAnswered && isCorrect && <>{info(element)}</>}
-          {isAnswered && !isCorrect && <>{info(element)}</>}
-
+      <div className='button-container'>
+        {randomLocations.map((location, index) => {
+          return (
+            <Button variant="secondary" key={index} onClick={handleClick}>{location}</Button>
+          )
+        })}
       </div>
     );
   }
+
+
+  return (
+    <div className="App">
+      <HeaderBlock />
+      <Line />
+      {randomLocations.length === 4 ? <Image element={element} /> : null}
+      {randomLocations.length === 4 ? ButtonBlock(randomLocations) : null}
+      {isAnswered ? <ShowInfo element={element} /> : null}
+    </div>
+  );
+}
 
 
 export default App;
