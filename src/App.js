@@ -125,7 +125,7 @@ function App() {
     );
   }
 
-  function ButtonBlock(randomLocations){
+  function ButtonBlock(randomLocations) {
     return (
       <div className='button-container'>
         {randomLocations.map((location, index) => {
