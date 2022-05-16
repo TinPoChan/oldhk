@@ -1,5 +1,6 @@
 import { Upload } from "@aws-sdk/lib-storage";
-import { S3Client } from "@aws-sdk/client-s3";
+// import { S3Client } from "@aws-sdk/client-s3";
+import { s3Client } from "../utils/s3Client";
 
 function uploadToS3 (file, folderPath) {
     let extn = file.name.split('.').pop();
@@ -11,7 +12,7 @@ function uploadToS3 (file, folderPath) {
 
     try{
         const parallelUploads3 = new Upload({
-            client: new S3Client({ region: "ap-east-1", credentials: { accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY, secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY } }),
+            client: s3Client,
             params: { Bucket: "oldhk", Key: folderPath, Body: file, ContentType: contentType },
             leavePartsOnError: false, // optional manually handle dropped parts
         });
