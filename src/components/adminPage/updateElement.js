@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import uploadToS3 from "../../utils/uploadToS3";
 
 const initialState = {
+    name: '',
     url_original: '',
     url_colored: '',
     url_now: '',
@@ -32,7 +33,6 @@ function UpdateElement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(element);
         if (formText === 'Submit') {
             const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
 
@@ -57,7 +57,12 @@ function UpdateElement() {
             const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
 
             await fetch(backendUrl + `${element.id}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Element not found')
+                    }
+                    res.json()
+                })
                 .then(data => {
                     setElement(() => data)
                     setFormText('Submit')
