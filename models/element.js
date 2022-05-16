@@ -1,9 +1,12 @@
 const mongoose = require('mongoose')
 
 const elementSchema = new mongoose.Schema({
-    name:{
+    name_zh:{
         type: String,
         required: true
+    },
+    name_en: {
+        type: String,
     },
     url_original: {
         type: String,
@@ -29,7 +32,10 @@ const elementSchema = new mongoose.Schema({
     external_url: {
         type: String,
     },
-    description:{
+    description_zh:{
+        type: String,
+    },
+    description_en: {
         type: String,
     },
     s3_id: {

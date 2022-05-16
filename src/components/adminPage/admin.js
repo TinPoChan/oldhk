@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import AddElement from "./addElement";
-import DeleteElement from "./deleteElement";
-import UpdateElement from "./updateElement";
+import AddElement from "./elements/addElement";
+import DeleteElement from "./elements/deleteElement";
+import UpdateElement from "./elements/updateElement";
 import AddLocation from "./addLocation";
 import UpdateLocation from "./updateLocation";
 import DeleteLocation from "./deleteLocation";

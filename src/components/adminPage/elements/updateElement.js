@@ -1,19 +1,6 @@
 import React, { useState } from "react";
-import uploadToS3 from "../../utils/uploadToS3";
-
-const initialState = {
-    name: '',
-    url_original: '',
-    url_colored: '',
-    url_now: '',
-    location: '',
-    year: '',
-    author: '',
-    external_url: '',
-    id: '',
-    description: '',
-    s3_id: '',
-}
+import uploadToS3 from "../../../utils/uploadToS3";
+import { initialState } from "./initialState";
 
 function UpdateElement() {
     const [element, setElement] = useState(initialState)
@@ -34,9 +21,11 @@ function UpdateElement() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formText === 'Submit') {
-            const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
+            const backendUrl = process.env.REACT_APP_BACKEND_URL + 'elements/id/' + element.id;
+            // const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
 
-            await fetch(backendUrl + `${element.id}`, {
+            // await fetch(backendUrl + `${element.id}`, {
+            await fetch(backendUrl, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,18 +43,24 @@ function UpdateElement() {
         }
 
         if (formText === 'Search') {
-            const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
+            const backendUrl = process.env.REACT_APP_BACKEND_URL + 'elements/id/' + element.id;
+            // const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
 
-            await fetch(backendUrl + `${element.id}`)
+            // fetch(backendUrl + `${element.id}`)
+            fetch(backendUrl)
                 .then(res => {
+                    console.log(res);
                     if (!res.ok) {
                         throw new Error('Element not found')
                     }
-                    res.json()
+                    return res.json();
                 })
                 .then(data => {
-                    setElement(() => data)
-                    setFormText('Submit')
+                    console.log(data);
+                    if (data !== undefined && data !== null) {
+                        setElement(() => data)
+                        setFormText('Submit')
+                    }
                 })
                 .catch(err => {
                     console.log(err)
@@ -81,7 +76,7 @@ function UpdateElement() {
 
         await uploadToS3(file, folderPath);
 
-        let url = "https://oldhk.s3.ap-east-1.amazonaws.com/" + folderPath;
+        let url = process.env.REACT_APP_S3_URL + folderPath;
 
         setElement({
             ...element,
@@ -96,11 +91,16 @@ function UpdateElement() {
         <div className="form-container">
             <form className="updateElementForm" onSubmit={handleSubmit}>
                 <h3>Update Element</h3>
+                
+                <label htmlFor="id">ID</label>
                 <input className="form-control mb-2" type='text' placeholder='id' name="id" onInput={handleChange} required={true} />
                 {formText === 'Submit' ? (
                     <>
-                        <label htmlFor="name">Name: </label>
-                        <input className="form-control mb-2" type='text' placeholder='name' name="name" defaultValue={element.name} onChange={handleChange} required={true} />
+                        <label htmlFor="name_zh">Name (Chinese)</label>
+                        <input className="form-control mb-2" type='text' placeholder='name_zh' name="name_zh" defaultValue={element.name_zh} onChange={handleChange} required={true} />
+
+                        <label htmlFor="name_en">Name (English)</label>
+                        <input className="form-control mb-2" type='text' placeholder='name_en' name="name_en" defaultValue={element.name_en} onChange={handleChange} />
 
                         <label className="mb-1" htmlFor="url_original">URL Original: </label>
                         {element.url_original ? (
@@ -132,8 +132,11 @@ function UpdateElement() {
                         <label htmlFor="external_url">External URL: </label>
                         <input className="form-control mb-2" type='text' placeholder='external_url' name="external_url" defaultValue={element.external_url} onChange={handleChange} required={true} />
 
-                        <label htmlFor="description">Description: </label>
-                        <textarea className="form-control mb-2" type='text' placeholder='description' name="description" defaultValue={element.description} onChange={handleChange} required={true} />
+                        <label htmlFor="description_zh">Description (Chinese)</label>
+                        <textarea className="form-control mb-2" type='text' placeholder='description_zh' name="description_zh" defaultValue={element.description_zh} onChange={handleChange} required={true} />
+
+                        <label htmlFor="description_en">Description (English)</label>
+                        <textarea className="form-control mb-2" type='text' placeholder='description_en' name="description_en" defaultValue={element.description_en} onChange={handleChange} required={true} />
                     </>
                 ) : null}
 

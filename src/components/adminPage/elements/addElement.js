@@ -1,19 +1,7 @@
 import React, { useState } from "react";
 import { nanoid } from 'nanoid'
-import uploadToS3 from "../../utils/uploadToS3";
-
-
-const initialState = {
-    url_original: '',
-    url_colored: '',
-    url_now: '',
-    location: '',
-    year: '',
-    author: '',
-    external_url: '',
-    description: '',
-    s3_id: '',
-}
+import uploadToS3 from "../../../utils/uploadToS3";
+import { initialState } from './initialState'
 
 let s3_id = nanoid();
 
@@ -39,7 +27,7 @@ function AddElement() {
 
         await uploadToS3(file, folderPath);
 
-        let url = "https://oldhk.s3.ap-east-1.amazonaws.com/" + folderPath;
+        let url = process.env.REACT_APP_S3_URL + folderPath;
 
         setElement({
             ...element,
@@ -52,7 +40,7 @@ function AddElement() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        await fetch('http://localhost:3001/api/elements', {
+        await fetch(process.env.REACT_APP_BACKEND_URL + 'elements', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -75,7 +63,11 @@ function AddElement() {
             <form onSubmit={handleSubmit}>
                 <h3>Add Element</h3>
 
-                <input className="form-control mb-2" type='text' placeholder='name' name="name" onChange={handleChange} required={true} />
+                <label htmlFor="name_zh">Name (Chinese)</label>
+                <input className="form-control mb-2" type='text' placeholder='name_zh' name="name_zh" onChange={handleChange} required={true} />
+
+                <label htmlFor="name_en">Name (English)</label>
+                <input className="form-control mb-2" type='text' placeholder='name_en' name="name_en" onChange={handleChange} />
 
                 <label className="mb-1" htmlFor="url_original">URL Original: </label>
                 {element.url_original ? (
@@ -107,8 +99,12 @@ function AddElement() {
                 <label htmlFor="external_url">External URL: </label>
                 <input className="form-control mb-2" type='text' placeholder='external_url' name="external_url" onChange={handleChange} />
 
-                <label htmlFor="description">Description: </label>
-                <textarea className="form-control mb-2" placeholder='description' name="description" onChange={handleChange} />
+                <label htmlFor="description_zh">Description (Chinese)</label>
+                <textarea className="form-control mb-2" type='text' placeholder='description_zh' name="description_zh" onChange={handleChange} />
+
+                <label htmlFor="description_en">Description (English)</label>
+                <textarea className="form-control mb-2" type='text' placeholder='description_en' name="description_en" onChange={handleChange} />
+
                 <input className="form-control" type="submit" value="Submit" />
             </form>
         </div>

@@ -5,11 +5,6 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Element = require('./models/element')
 const Location = require('./models/location')
-const ObjectId = require('mongodb').ObjectId
-
-function isValidObjectId(id) {
-    return ObjectId.isValid(id)
-}
 
 app.use(cors())
 
@@ -46,8 +41,6 @@ app.get('/api/elements/id/:id', async (req, res) => {
     } catch(err) {
         res.status(404).json({ message: 'Element not found' })
     }
-    // const element = await Element.findById(req.params.id)
-    // res.json(element)
 })
 
 app.post('/api/elements', async (req, res) => {
