@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddElement from "./elements/addElement";
 import DeleteElement from "./elements/deleteElement";
 import UpdateElement from "./elements/updateElement";
@@ -51,17 +51,20 @@ function LocationControls() {
 
 function Admin() {
     const [activeTab, setActiveTab] = useState("Element");
-    const [username, setUsername] = useState('') 
-    const [password, setPassword] = useState('') 
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
     const handleLogin = async (event) => {
         event.preventDefault()
-        
-        try{
+
+        try {
             const user = await loginService.login({
                 username, password,
             })
+            window.localStorage.setItem(
+                'loggedUser', JSON.stringify(user)
+            )
             console.log(user);
             elementService.setToken(user.token)
             setUser(user)
@@ -70,23 +73,32 @@ function Admin() {
         } catch (error) {
             console.log(error);
         }
-      }
+    }
+
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem('loggedUser')
+        if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON)
+          setUser(user)
+          elementService.setToken(user.token)
+        }
+      }, [])
 
     return (
         <div className="Admin-container">
             {user ? <>
-                        {/* <AdminSideBar /> */}
+                {/* <AdminSideBar /> */}
                 <div className="admin-tabs">
-                <div className="admin-tabs-header">
-                    Dashboard
+                    <div className="admin-tabs-header">
+                        Dashboard
+                    </div>
+                    <button className={activeTab === "Element" ? "active" : ""} onClick={() => setActiveTab("Element")}>Element</button>
+                    <button className={activeTab === "Location" ? "active" : ""} onClick={() => setActiveTab("Location")}>Location</button>
                 </div>
-                <button className={activeTab === "Element" ? "active" : ""} onClick={() => setActiveTab("Element")}>Element</button>
-                <button className={activeTab === "Location" ? "active" : ""} onClick={() => setActiveTab("Location")}>Location</button>
-            </div>
-            <div className="admin-content">
-                {activeTab === "Element" ? <ElementControls /> : null}
-                {activeTab === "Location" ? <LocationControls /> : null}
-            </div>
+                <div className="admin-content">
+                    {activeTab === "Element" ? <ElementControls /> : null}
+                    {activeTab === "Location" ? <LocationControls /> : null}
+                </div>
             </> : <>
                 <div className="admin-login">
                     <form onSubmit={handleLogin}>
