@@ -6,6 +6,8 @@ import AddLocation from "./addLocation";
 import UpdateLocation from "./updateLocation";
 import DeleteLocation from "./deleteLocation";
 import './admin.css';
+import loginService from '../../services/login'
+import elementService from '../../services/element'
 
 
 function ElementControls() {
@@ -49,11 +51,32 @@ function LocationControls() {
 
 function Admin() {
     const [activeTab, setActiveTab] = useState("Element");
+    const [username, setUsername] = useState('') 
+    const [password, setPassword] = useState('') 
+    const [user, setUser] = useState(null)
+
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        
+        try{
+            const user = await loginService.login({
+                username, password,
+            })
+            console.log(user);
+            elementService.setToken(user.token)
+            setUser(user)
+            setUsername('')
+            setPassword('')
+        } catch (error) {
+            console.log(error);
+        }
+      }
+
     return (
         <div className="Admin-container">
-
-            {/* <AdminSideBar /> */}
-            <div className="admin-tabs">
+            {user ? <>
+                        {/* <AdminSideBar /> */}
+                <div className="admin-tabs">
                 <div className="admin-tabs-header">
                     Dashboard
                 </div>
@@ -64,6 +87,18 @@ function Admin() {
                 {activeTab === "Element" ? <ElementControls /> : null}
                 {activeTab === "Location" ? <LocationControls /> : null}
             </div>
+            </> : <>
+                <div className="admin-login">
+                    <form onSubmit={handleLogin}>
+                        <label>Username</label>
+                        <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
+                        <label>Password</label>
+                        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+            </>}
+
 
         </div>
     );

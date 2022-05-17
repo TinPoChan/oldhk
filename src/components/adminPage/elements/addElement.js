@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { nanoid } from 'nanoid'
 import uploadToS3 from "../../../utils/uploadToS3";
 import { initialState } from './initialState'
+import elementService from '../../../services/element'
 
 let s3_id = nanoid();
 
@@ -39,11 +40,13 @@ function AddElement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const auth = elementService.getToken();
 
         await fetch(process.env.REACT_APP_BACKEND_URL + 'elements', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': auth
             },
             body: JSON.stringify(element)
         }).then((res) => {
