@@ -1,18 +1,79 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/elements'
+const baseUrl = process.env.REACT_APP_BACKEND_URL + 'elements'
 
-let token = null
+let config = null
 
-const setToken = newToken => {
-    token = `bearer ${newToken}`
+const setConfig = (token) => {
+    config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+        },
+    }
 }
-const getToken = () => {
-    return token
+
+const postElement = async (newElement) => {
+    try {
+        const res = await axios.post(baseUrl, newElement, config)
+        return res.data
+    } catch (err) {
+        console.log(err)
+        return null
+    }
 }
+
+const getElement = async (id) => {
+    try {
+        const res = await axios.get(`${baseUrl}/id/${id}`, config)
+        return res.data
+    } catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
+const getElements = async () => {
+    try {
+        const res = await axios.get(baseUrl, config)
+        return res.data
+    } catch (err) {
+        console.log(err)
+        return []
+    }
+
+}
+
+const deleteElement = async (id) => {
+    try {
+        const res = await axios.delete(`${baseUrl}/id/${id}`, config)
+        return res.data
+    }
+    catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
+const updateElement = async (element) => {
+    const id = element.id
+    try {
+        const res = await axios.put(`${baseUrl}/id/${id}`, element, config)
+        return res.data
+    }
+    catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
 
 const exportElement = {
-    setToken,
-    getToken,
+    setConfig,
+    postElement,
+    getElements,
+    deleteElement,
+    getElement,
+    updateElement,
 }
 
 export default exportElement

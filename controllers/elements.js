@@ -7,7 +7,7 @@ router.get('/', userExtractor, async (req, res) => {
     if (!req.user) {
         return res.status(401).json({ error: 'token missing or invalid' })
     }
-    
+
     const elements = await Element.find()
     res.json(elements)
 })
@@ -80,7 +80,11 @@ router.get('/random/', async (req, res) => {
 })
 
 // delete all elements from database
-router.post('/all', async (req, res) => {
+router.post('/all', userExtractor, async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ error: 'token missing or invalid' })
+    }
+
     try {
         await Element.deleteMany({})
         res.send('All elements deleted')

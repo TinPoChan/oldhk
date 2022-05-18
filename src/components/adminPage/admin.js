@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import AddElement from "./elements/addElement";
 import DeleteElement from "./elements/deleteElement";
 import UpdateElement from "./elements/updateElement";
-import AddLocation from "./addLocation";
-import UpdateLocation from "./updateLocation";
-import DeleteLocation from "./deleteLocation";
+import AddLocation from "./locations/addLocation";
+import UpdateLocation from "./locations/updateLocation";
+import DeleteLocation from "./locations/deleteLocation";
 import './admin.css';
 import loginService from '../../services/login'
-import elementService from '../../services/element'
 import ElementDashBoard from "./elements/dashBoard";
 import LocationDashBoard from "./locations/dashBoard"
+import userService from '../../services/user'
 
 function Admin() {
     const [activeTab, setActiveTab] = useState("Element");
@@ -29,7 +29,7 @@ function Admin() {
                 'loggedUser', JSON.stringify(user)
             )
             console.log(user);
-            elementService.setToken(user.token)
+            await userService.setToken(user.token)
             setUser(user)
             setUsername('')
             setPassword('')
@@ -45,19 +45,19 @@ function Admin() {
         setContentTab("")
     }
 
+    const handleClick = (event) => {
+        setActiveTab(event.target.id)
+        setContentTab("")
+    }
+
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedUser')
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
             setUser(user)
-            elementService.setToken(user.token)
+            userService.setToken(user.token)
         }
     }, [])
-
-    const handleClick = (event) => {
-        setActiveTab(event.target.id)
-        setContentTab("")
-    }
 
     function ElementControls() {
         return (
@@ -77,7 +77,7 @@ function Admin() {
         );
     }
 
-    function LocationControls() {    
+    function LocationControls() {
         return (
             <>
                 <div className="location-tabs">
@@ -94,12 +94,11 @@ function Admin() {
             </>
         );
     }
-    
+
 
     return (
         <div className="Admin-container">
             {user ? <>
-                {/* <AdminSideBar /> */}
                 <div className="admin-tabs">
                     <div className="admin-tabs-header">
                         Dashboard

@@ -65,4 +65,13 @@ router.get('/id/:id', async (req, res) => {
     }
 })
 
+router.delete('/id/:id', async (req, res) => {
+    try {
+        const location = await Location.findByIdAndDelete(req.params.id)
+        res.json(location)
+    } catch (e) {
+        res.status(404).send()
+    }
+})
+
 module.exports = router

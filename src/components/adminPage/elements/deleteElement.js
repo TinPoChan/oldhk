@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import elementService from '../../../services/element'
 
 function DeleteElement() {
     const [id, setId] = useState('')
@@ -9,18 +10,15 @@ function DeleteElement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(id);
-        await fetch(`http://localhost:3001/api/elements/id/${id}`, {
-            method: 'DELETE',
-        }).then((res) => {
-            if (res.status === 200) {
-                console.log('Element deleted')
-                setId(() => '')
-                e.target.reset()
-            }
-        }).catch(err => {
-            console.log(err)
-        })
+
+        const res = elementService.deleteElement(id);
+
+        if(res) {
+            setId('')
+            e.target.reset()
+        } else {
+            console.log('error');
+        }
     }
 
     return (

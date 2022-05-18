@@ -40,25 +40,17 @@ function AddElement() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const auth = elementService.getToken();
 
-        await fetch(process.env.REACT_APP_BACKEND_URL + 'elements', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': auth
-            },
-            body: JSON.stringify(element)
-        }).then((res) => {
-            if (res.status === 201) {
-                console.log('Element added')
-                clearState()
-                e.target.reset()
-                s3_id = nanoid();
-            }
-        }).catch(err => {
-            console.log(err)
-        })
+        const res = elementService.postElement(element);
+
+        if(res) {
+            clearState();
+            e.target.reset()
+            s3_id = nanoid();
+        } else {
+            console.log('error');
+        }
+
     }
 
     return (

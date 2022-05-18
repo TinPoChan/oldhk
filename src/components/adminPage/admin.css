@@ -47,7 +47,7 @@
     justify-content: center;
     flex-wrap: wrap;
 }
-.element-tabs button, .location-tabs button{
+.element-tabs button, .location-tabs button, #clearButton{
     width: 10rem;
     padding: 1rem;
     border: none;
@@ -56,11 +56,11 @@
     color: white;
     margin: 1rem;
 }
-.element-tabs button:hover, .location-tabs button:hover{
+.element-tabs button:hover, .location-tabs button:hover, #clearButton:hover{
     background-color: whitesmoke;
     color: #0D2731;
 }
-.element-content, .location-content{
+.element-content, .location-content, .detail-element{
     width: 100%;
     display: flex;
     flex-wrap: wrap;

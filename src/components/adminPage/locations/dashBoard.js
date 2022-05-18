@@ -1,34 +1,21 @@
 import React, { useState, useEffect } from "react";
-import elementService from '../../../services/element'
-import axios from 'axios';
-
-const handleFetch = async () => {
-    const auth = elementService.getToken();
-
-    const res = await axios.get(process.env.REACT_APP_BACKEND_URL + 'locations', {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': auth
-        }})
-    return res.data;
-}
+import locationService from '../../../services/location'
 
 function LocationDashBoard() {
     const [locations, setLocations] = useState([]);
 
     const fetchLocations = async () => {
-        const locations = await handleFetch();
+        const locations = await locationService.getLocations();
         setLocations(locations);
     }
 
     useEffect(() => {
         fetchLocations();
-    }
-        , [])
+    }, [])
 
     return (
-        <div>
-            <table className="table">
+        <div className="table-responsive">
+            <table className="table table-striped table-bordered table-sm">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -40,8 +27,6 @@ function LocationDashBoard() {
                         <th>Area (English)</th>
                         <th>Region (Chinese)</th>
                         <th>Region (English)</th>
-                        <th>Exist?</th>
-                        <th>Reference</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,8 +41,6 @@ function LocationDashBoard() {
                             <td>{location.area_en}</td>
                             <td>{location.region_zh}</td>
                             <td>{location.region_en}</td>
-                            <td>{location.exist}</td>
-                            <td>{location.ref}</td>
                         </tr>
                     ))}
                 </tbody>

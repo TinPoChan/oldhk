@@ -1,25 +1,14 @@
 import React, { useState, useEffect } from "react";
 import elementService from '../../../services/element'
-import axios from 'axios';
-
-const handleFetch = async () => {
-    const auth = elementService.getToken();
-
-    const res = await axios.get(process.env.REACT_APP_BACKEND_URL + 'elements', {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': auth
-        }})
-    return res.data;
-
-
-}
+import DetailElement from "./detailElement";
 
 function ElementDashBoard() {
     const [elements, setElements] = useState([]);
+    const [element, setElement] = useState(null);
+    const [clear, setClear] = useState(false);
 
     const fetchElements = async () => {
-        const elements = await handleFetch();
+        const elements = await elementService.getElements();
         setElements(elements);
     }
 
@@ -27,9 +16,33 @@ function ElementDashBoard() {
         fetchElements();
     }, [])
 
+    const handleClick = async (e, id) => {
+        if(e.target.id === 'delete') {
+            const deleted = await elementService.deleteElement(id);
+            if(deleted) {
+                fetchElements();
+            }
+        }
+        if(e.target.id === 'check') {
+            setElement(await elementService.getElement(id));
+            setClear(false);
+        }
+    }
+    
+    if (element !== null && !clear) {
+        return (
+            <>
+            
+            <div className="detail-element">
+                <DetailElement element={element} />
+                <button id="clearButton" onClick={() => setClear(true)}>clear</button>
+            </div>
+            </>
+        )
+    } else {
     return (
-        <div>
-            <table className="table">
+        <div className="table-responsive">
+            <table className="table table-striped table-bordered table-sm">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -47,12 +60,15 @@ function ElementDashBoard() {
                             <td>{element.name_en}</td>
                             <td>{element.location}</td>
                             <td>{element.year}</td>
+                            {/* <td><button id="check" type="button" className="btn btn-primary" onClick={(e) => handleClick(e, element.id)}>Check</button></td> */}
+                            <td><button id="delete" type="button" className="btn btn-danger" onClick={(e) => handleClick(e, element.id)}>Delete</button></td>
                         </tr>
                     ))}
                 </tbody>
             </table>
         </div>
     )
+}
 }
 
 export default ElementDashBoard;

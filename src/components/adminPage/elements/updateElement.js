@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import uploadToS3 from "../../../utils/uploadToS3";
 import { initialState } from "./initialState";
+import elementService from "../../../services/element"
 
 function UpdateElement() {
     const [element, setElement] = useState(initialState)
     const [formText, setFormText] = useState('Search')
+    const [found, setFound] = useState(false)
 
     const clearState = () => {
         setElement({ ...initialState })
@@ -21,50 +23,24 @@ function UpdateElement() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formText === 'Submit') {
-            const backendUrl = process.env.REACT_APP_BACKEND_URL + 'elements/id/' + element.id;
-            // const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
-
-            // await fetch(backendUrl + `${element.id}`, {
-            await fetch(backendUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(element)
-            }).then((res) => {
-                if (res.status === 200) {
-                    console.log('Element updated')
-                    clearState()
-                    e.target.reset()
-                }
-            }).catch(err => {
-                console.log(err)
-            })
+            const res = await elementService.updateElement(element)
+            if (!res) {
+                console.log('error');
+            }
+            console.log('success');
+            clearState()
+            e.target.reset()
         }
 
         if (formText === 'Search') {
-            const backendUrl = process.env.REACT_APP_BACKEND_URL + 'elements/id/' + element.id;
-            // const backendUrl = 'http://localhost:3001/api/elements/id/' || process.env.BACKEND_URL
-
-            // fetch(backendUrl + `${element.id}`)
-            fetch(backendUrl)
-                .then(res => {
-                    console.log(res);
-                    if (!res.ok) {
-                        throw new Error('Element not found')
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    console.log(data);
-                    if (data !== undefined && data !== null) {
-                        setElement(() => data)
-                        setFormText('Submit')
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            const res = await elementService.getElement(element.id)
+            if (!res) {
+                setFound(false)
+                console.log('not found');
+            }
+            setElement(() => res)
+            setFound(true)
+            setFormText('Submit')
         }
     }
 
@@ -85,8 +61,6 @@ function UpdateElement() {
     }
 
 
-
-
     return (
         <div className="form-container">
             <form className="updateElementForm" onSubmit={handleSubmit}>
@@ -94,7 +68,7 @@ function UpdateElement() {
                 
                 <label htmlFor="id">ID</label>
                 <input className="form-control mb-2" type='text' placeholder='id' name="id" onInput={handleChange} required={true} />
-                {formText === 'Submit' ? (
+                {found ? (
                     <>
                         <label htmlFor="name_zh">Name (Chinese)</label>
                         <input className="form-control mb-2" type='text' placeholder='name_zh' name="name_zh" defaultValue={element.name_zh} onChange={handleChange} required={true} />
