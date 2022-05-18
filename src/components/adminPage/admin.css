@@ -33,7 +33,10 @@
 }
 
 .admin-content{
-    width: 70%;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    
 }
 .element-tabs, .location-tabs{
     width: 100%;
@@ -59,7 +62,6 @@
 }
 .element-content, .location-content{
     width: 100%;
-
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

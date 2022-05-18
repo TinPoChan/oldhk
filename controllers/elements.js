@@ -1,9 +1,13 @@
 const router = require('express').Router()
 const Element = require('../models/element')
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 const { userExtractor } = require('../utils/middleware')
 
-router.get('/', async (req, res) => {
+router.get('/', userExtractor, async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ error: 'token missing or invalid' })
+    }
+    
     const elements = await Element.find()
     res.json(elements)
 })

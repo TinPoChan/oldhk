@@ -8,49 +8,12 @@ import DeleteLocation from "./deleteLocation";
 import './admin.css';
 import loginService from '../../services/login'
 import elementService from '../../services/element'
-
-
-function ElementControls() {
-    const [activeTab, setActiveTab] = useState("add");
-
-    return (
-        <>
-            <div className="element-tabs">
-                <button className={activeTab === "add" ? "active" : ""} onClick={() => setActiveTab("add")}>Add</button>
-                <button className={activeTab === "update" ? "active" : ""} onClick={() => setActiveTab("update")}>Update</button>
-                <button className={activeTab === "delete" ? "active" : ""} onClick={() => setActiveTab("delete")}>Delete</button>
-            </div>
-            <div className="element-content">
-                {activeTab === "add" ? <AddElement /> : null}
-                {activeTab === "update" ? <UpdateElement /> : null}
-                {activeTab === "delete" ? <DeleteElement /> : null}
-            </div>
-        </>
-    );
-}
-
-function LocationControls() {
-    const [activeTab, setActiveTab] = useState("add");
-
-    return (
-        <>
-            <div className="location-tabs">
-                <button className={activeTab === "add" ? "active" : ""} onClick={() => setActiveTab("add")}>Add</button>
-                <button className={activeTab === "update " ? "active" : ""} onClick={() => setActiveTab("update")}>Update</button>
-                <button className={activeTab === "delete" ? "active" : ""} onClick={() => setActiveTab("delete")}>Delete</button>
-            </div>
-            <div className="location-content">
-                {activeTab === "add" ? <AddLocation /> : null}
-                {activeTab === "update" ? <UpdateLocation /> : null}
-                {activeTab === "delete" ? <DeleteLocation /> : null}
-            </div>
-        </>
-    );
-}
-
+import ElementDashBoard from "./elements/dashBoard";
+import LocationDashBoard from "./locations/dashBoard"
 
 function Admin() {
     const [activeTab, setActiveTab] = useState("Element");
+    const [contentTab, setContentTab] = useState("");
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
@@ -75,14 +38,63 @@ function Admin() {
         }
     }
 
+    const handleLogout = () => {
+        window.localStorage.removeItem('loggedUser')
+        setUser(null)
+        setActiveTab("Element")
+        setContentTab("")
+    }
+
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedUser')
         if (loggedUserJSON) {
-          const user = JSON.parse(loggedUserJSON)
-          setUser(user)
-          elementService.setToken(user.token)
+            const user = JSON.parse(loggedUserJSON)
+            setUser(user)
+            elementService.setToken(user.token)
         }
-      }, [])
+    }, [])
+
+    const handleClick = (event) => {
+        setActiveTab(event.target.id)
+        setContentTab("")
+    }
+
+    function ElementControls() {
+        return (
+            <>
+                <div className="element-tabs">
+                    <button className={contentTab === "add" ? "active" : ""} onClick={() => setContentTab("add")}>Add</button>
+                    <button className={contentTab === "update" ? "active" : ""} onClick={() => setContentTab("update")}>Update</button>
+                    <button className={contentTab === "delete" ? "active" : ""} onClick={() => setContentTab("delete")}>Delete</button>
+                </div>
+                <div className="element-content">
+                    {contentTab === "" ? <ElementDashBoard /> : null}
+                    {contentTab === "add" ? <AddElement /> : null}
+                    {contentTab === "update" ? <UpdateElement /> : null}
+                    {contentTab === "delete" ? <DeleteElement /> : null}
+                </div>
+            </>
+        );
+    }
+
+    function LocationControls() {    
+        return (
+            <>
+                <div className="location-tabs">
+                    <button className={contentTab === "add" ? "active" : ""} onClick={() => setContentTab("add")}>Add</button>
+                    <button className={contentTab === "update " ? "active" : ""} onClick={() => setContentTab("update")}>Update</button>
+                    <button className={contentTab === "delete" ? "active" : ""} onClick={() => setContentTab("delete")}>Delete</button>
+                </div>
+                <div className="location-content">
+                    {contentTab === "" ? <LocationDashBoard /> : null}
+                    {contentTab === "add" ? <AddLocation /> : null}
+                    {contentTab === "update" ? <UpdateLocation /> : null}
+                    {contentTab === "delete" ? <DeleteLocation /> : null}
+                </div>
+            </>
+        );
+    }
+    
 
     return (
         <div className="Admin-container">
@@ -92,8 +104,9 @@ function Admin() {
                     <div className="admin-tabs-header">
                         Dashboard
                     </div>
-                    <button className={activeTab === "Element" ? "active" : ""} onClick={() => setActiveTab("Element")}>Element</button>
-                    <button className={activeTab === "Location" ? "active" : ""} onClick={() => setActiveTab("Location")}>Location</button>
+                    <button id="Element" className={activeTab === "Element" ? "active" : ""} onClick={handleClick}>Element</button>
+                    <button id="Location" className={activeTab === "Location" ? "active" : ""} onClick={handleClick}>Location</button>
+                    <button onClick={handleLogout}>Logout</button>
                 </div>
                 <div className="admin-content">
                     {activeTab === "Element" ? <ElementControls /> : null}
