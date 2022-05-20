@@ -28,6 +28,7 @@ const locationSchema = new mongoose.Schema({
     },
     exist: {
         type: Boolean,
+        default: true
     },
     ref: {
         type: String,

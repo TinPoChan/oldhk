@@ -122,8 +122,6 @@ function Admin() {
                     </form>
                 </div>
             </>}
-
-
         </div>
     );
 }

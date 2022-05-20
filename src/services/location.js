@@ -12,9 +12,19 @@ const setConfig = (token) => {
     }
 }
 
-const postLocation = async (newLocation) => {
+const addLocation = async (newLocation) => {
     try {
         const res = await axios.post(baseUrl, newLocation, config)
+        return res.data
+    } catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
+const getLocation = async (id) => {
+    try {
+        const res = await axios.get(`${baseUrl}/id/${id}`, config)
         return res.data
     } catch (err) {
         console.log(err)
@@ -42,11 +52,26 @@ const deleteLocation = async (id) => {
     }
 }
 
+const updateLocation = async (Location) => {
+    const id = Location.id
+    try {
+        const res = await axios.put(`${baseUrl}/id/${id}`, Location, config)
+        return res.data
+    }
+    catch (err) {
+        console.log(err)
+        return null
+    }
+}
+
+
 const exportLocation = {
     setConfig,
-    postLocation,
+    addLocation,
     getLocations,
-    deleteLocation
+    deleteLocation,
+    updateLocation,
+    getLocation,
 }
 
 export default exportLocation

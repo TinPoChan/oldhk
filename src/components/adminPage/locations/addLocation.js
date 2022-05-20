@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import locationService from "../../../services/location";
 
 const initialState = {
     name_zh: "",
@@ -32,21 +33,15 @@ function AddLocation() {
         e.preventDefault();
         console.log(location);
 
-        await fetch('http://localhost:3001/api/locations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(location)
-        }).then((res) => {
-            if (res.status === 201) {
-                console.log('Location added')
-                clearState()
-                e.target.reset()
-            }
-        }).catch(err => {
-            console.log(err)
-        })
+        const res = await locationService.addLocation(location)
+        if (!res) {
+            console.log('error');
+            return
+        }
+        console.log('success');
+        clearState()
+        e.target.reset()
+
     }
 
     return (
@@ -68,12 +63,14 @@ function AddLocation() {
             
             <label className="mb-1" htmlFor="region_zh">Region (Chinese)</label>
             <select className="form-control mb-2" name="region_zh" onChange={handleChange} required={true}>
+                <option value="">選擇地區</option>
                 <option value="香港島">香港島</option>
                 <option value="九龍">九龍</option>
                 <option value="新界">新界</option>
             </select>
             <label className="mb-1" htmlFor="region_en">Region (English)</label>
             <select className="form-control mb-2" name="region_en" onChange={handleChange} required={true}>
+                <option value="">Select Region</option>
                 <option value="Hong Kong Island">Hong Kong Island</option>
                 <option value="Kowloon">Kowloon</option>
                 <option value="New Territories">New Territories</option>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import locationService from "../../../services/location";
 
 const initialState = {
     name_zh: "",
@@ -17,6 +18,7 @@ const initialState = {
 function UpdateLocation() {
     const [location, setLocation] = useState(initialState);
     const [formText, setFormText] = useState('Search')
+    const [found, setFound] = useState(false)
 
     const clearState = () => {
         setLocation({ ...initialState })
@@ -24,7 +26,6 @@ function UpdateLocation() {
     }
 
     const handleChange = (e) => {
-        console.log(e.target.name, e.target.value);
         e.preventDefault();
         setLocation(() => ({
             ...location,
@@ -37,49 +38,29 @@ function UpdateLocation() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(location);
-        
 
         if (formText === 'Submit') {
-            const backendUrl = `http://localhost:3001/api/locations/id/${location.id}`
-
-        await fetch(backendUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(location)
-        }).then((res) => {
-            if (res.status === 200) {
-                console.log('Location updated')
-                clearState()
-                e.target.reset()
+            const res = await locationService.updateLocation(location)
+            if (!res) {
+                console.log('error');
+                return
             }
-        }).catch(err => {
-            console.log(err)
-        })
-    }
+            console.log('success');
+            clearState()
+            e.target.reset()
+        }
 
-    if (formText === 'Search') {
-        const backendUrl = `http://localhost:3001/api/locations/id/${location.id}`
-
-        await fetch(backendUrl)
-            .then(res => {
-                if (!res.ok){
-                    throw new Error('Location not found')
-                }
-                res.json()
-            })
-            .then(data => {
-                setLocation(() => data)
-                setFormText('Submit')
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    
-    }
-
+        if (formText === 'Search') {
+            const res = await locationService.getLocation(location.id)
+            if (!res) {
+                setFound(false)
+                console.log('not found');
+                return
+            }
+            setLocation(() => res)
+            setFound(true)
+            setFormText('Submit')
+        }
     }
 
     return (
@@ -87,7 +68,7 @@ function UpdateLocation() {
         <form onSubmit={handleSubmit}>
             <h3>Update Location</h3>
             <input className="form-control mb-2" type='text' placeholder='id' name="id" onInput={handleChange} required={true} />
-            {formText === 'Submit' ? (
+            {found ? (
                 <>
                 <label className="mb-1" htmlFor="name_zh">Name (Chinese)</label>
             <input className="form-control mb-2" type='text' placeholder='name_zh' name="name_zh" onChange={handleChange} required={true} defaultValue={location.name_zh}/>

@@ -13,6 +13,15 @@ function LocationDashBoard() {
         fetchLocations();
     }, [])
 
+    const handleClick = async (e, id) => {
+        if(e.target.id === 'delete') {
+            const deleted = await locationService.deleteLocation(id);
+            if(deleted) {
+                fetchLocations();
+            }
+        }
+    }
+
     return (
         <div className="table-responsive">
             <table className="table table-striped table-bordered table-sm">
@@ -41,6 +50,7 @@ function LocationDashBoard() {
                             <td>{location.area_en}</td>
                             <td>{location.region_zh}</td>
                             <td>{location.region_en}</td>
+                            <td><button id="delete" type="button" className="btn btn-danger" onClick={(e) => handleClick(e, location.id)}>Delete</button></td>
                         </tr>
                     ))}
                 </tbody>

@@ -26,6 +26,7 @@ function UpdateElement() {
             const res = await elementService.updateElement(element)
             if (!res) {
                 console.log('error');
+                return
             }
             console.log('success');
             clearState()
@@ -37,6 +38,7 @@ function UpdateElement() {
             if (!res) {
                 setFound(false)
                 console.log('not found');
+                return
             }
             setElement(() => res)
             setFound(true)

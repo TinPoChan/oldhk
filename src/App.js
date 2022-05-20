@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 
 
 
+
 function Image(element) {
   const url = element.element.url_original;
   return (
@@ -140,7 +141,7 @@ function App() {
 
   return (
     <div className="App">
-      <HeaderBlock />
+      <HeaderBlock />     
       <Line />
       {randomLocations.length === 4 ? <Image element={element} /> : null}
       {randomLocations.length === 4 ? ButtonBlock(randomLocations) : null}

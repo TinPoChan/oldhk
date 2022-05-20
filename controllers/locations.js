@@ -32,6 +32,12 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const location = new Location(req.body)
+    //check if location already exists
+    const location_exists = await Location.findOne({ name_zh: location.name_zh })
+    if (location_exists) {
+        return res.status(400).json({ error: 'location already exists' })
+    }
+    
     try {
         await location.save()
         res.status(201).send(location)
