@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import locationService from "../../../services/location";
-
-const initialState = {
-    name_zh: "",
-    name_en: "",
-    district_zh: "",
-    district_en: "",
-    area_zh: "",
-    area_en: "",
-    region_zh: "",
-    region_en: "",
-    exist: true,
-    ref: "",
-    id: ""
-}
+import { initialState } from "./initialState";
 
 function UpdateLocation() {
     const [location, setLocation] = useState(initialState);
@@ -33,8 +20,6 @@ function UpdateLocation() {
         }))
         
     }
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();

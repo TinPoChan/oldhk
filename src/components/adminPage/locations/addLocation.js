@@ -1,18 +1,6 @@
 import React, { useState } from "react";
 import locationService from "../../../services/location";
-
-const initialState = {
-    name_zh: "",
-    name_en: "",
-    district_zh: "",
-    district_en: "",
-    area_zh: "",
-    area_en: "",
-    region_zh: "",
-    region_en: "",
-    exist: true,
-    ref: ""
-}
+import { initialState } from "./initialState";
 
 function AddLocation() {
     const [location, setLocation] = useState(initialState);
