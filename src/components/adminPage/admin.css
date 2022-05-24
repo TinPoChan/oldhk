@@ -5,6 +5,13 @@
     display: flex;
     width: 100%;
 }
+.admin-login {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
 
 .admin-tabs{
     width: 20rem;

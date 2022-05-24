@@ -115,10 +115,10 @@ function Admin() {
                 <div className="admin-login">
                     <form onSubmit={handleLogin}>
                         <label>Username</label>
-                        <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
+                        <input type="text" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} />
                         <label>Password</label>
-                        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
-                        <button type="submit">Login</button>
+                        <input type="password" className="form-control mb-2" value={password} onChange={(event) => setPassword(event.target.value)} />
+                        <button type="submit" className="form-control btn btn-primary">Login</button>
                     </form>
                 </div>
             </>}
