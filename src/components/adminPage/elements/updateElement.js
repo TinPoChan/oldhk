@@ -54,7 +54,7 @@ function UpdateElement() {
 
         await uploadToS3(file, folderPath);
 
-        let url = process.env.REACT_APP_S3_URL + folderPath;
+        let url = process.env.REACT_APP_S3_CDN_URL + folderPath;
 
         setElement({
             ...element,

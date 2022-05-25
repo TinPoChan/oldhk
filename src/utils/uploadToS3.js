@@ -1,8 +1,10 @@
 import { Upload } from "@aws-sdk/lib-storage";
 // import { S3Client } from "@aws-sdk/client-s3";
 import { s3Client } from "../utils/s3Client";
+import compressImage from "./compressImage";
 
-function uploadToS3 (file, folderPath) {
+async function uploadToS3 (file, folderPath) {
+    let res = await compressImage(file);
     let extn = file.name.split('.').pop();
     let contentType = 'application/octet-stream';
     if (extn === 'html') contentType = "text/html";
@@ -13,7 +15,7 @@ function uploadToS3 (file, folderPath) {
     try{
         const parallelUploads3 = new Upload({
             client: s3Client,
-            params: { Bucket: "oldhk", Key: folderPath, Body: file, ContentType: contentType },
+            params: { Bucket: process.env.REACT_APP_S3_BUCKET, Key: folderPath, Body: res, ContentType: contentType },
             leavePartsOnError: false, // optional manually handle dropped parts
         });
     
