@@ -12,7 +12,7 @@ function Image(element) {
   const url = element.element.url_original;
   return (
     <div className='image-container'>
-      <img src={url} alt={url} />
+      <img src={url} alt={url}/>
     </div>
   );
 }
@@ -116,12 +116,13 @@ function App() {
     const info = element.element
     return (
       <div className='info-container'>
-        <div className='info-name'>{info.name}</div>
-        <div className='info-location'>{info.location}</div>
-        {info.year ? <div className='info-year'>{info.year}</div> : null}
-        {info.author ? <div className='info-author'>{info.author}</div> : null}
-        {info.external_url ? <div className='info-url'>{info.external_url}</div> : null}
-        <button className='cancel-button' onClick={restartGame}>Cancel</button>
+        <div className='info-name mb-2 mt-2'>名字: {info.name_zh}</div>
+        <div className='info-location mb-2'>地點: {info.location}</div>
+        {info.year ? <div className='info-year mb-2'>年份: {info.year}</div> : null}
+        {info.author ? <div className='info-author mb-2'>作者: {info.author}</div> : null}
+        {info.description_zh ? <div className='info-description mb-2'>簡述: {info.description_zh}</div> : null}
+        {info.external_url ? (<a href={info.external_url}> <div className='info-url mb-2'>{info.external_url}</div></a>) : null}
+        <button className='cancel-button' onClick={restartGame}>X</button>
       </div>
     );
   }
